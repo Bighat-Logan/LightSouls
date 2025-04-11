@@ -7,7 +7,17 @@
 		{
 			"Name": "LightSouls",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"GameplayAbilities",
+				"UMG",
+				"CoreUObject",
+				"EnhancedInput",
+				"AIModule",
+				"Niagara",
+				"ModelViewViewModel"
+			]
 		}
 	],
 	"Plugins": [

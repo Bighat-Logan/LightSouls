@@ -120,6 +120,7 @@ void ULsCommonAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 			{
 				// This is proper damage
 				TargetCharacter->HandleDamage(LocalDamageDone, HitResult, SourceTags, SourceCharacter, SourceActor);
+				TargetCharacter->HandleHealthChange(LocalDamageDone, HitResult, SourceTags, SourceCharacter, SourceActor);
 				
 			}
 		}
@@ -128,28 +129,35 @@ void ULsCommonAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 
 void ULsCommonAttributeSet::OnRep_Health(const FGameplayAttributeData& OldValue)
 {
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ULsCommonAttributeSet, Health, OldValue);
 }
 
 void ULsCommonAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldValue)
 {
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ULsCommonAttributeSet, MaxHealth, OldValue);
 }
 
 void ULsCommonAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldValue)
 {
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ULsCommonAttributeSet, Mana, OldValue);
 }
 
 void ULsCommonAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldValue)
 {
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ULsCommonAttributeSet, MaxMana, OldValue);
 }
 
 void ULsCommonAttributeSet::OnRep_AttackPower(const FGameplayAttributeData& OldValue)
 {
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ULsCommonAttributeSet, AttackPower, OldValue);
 }
 
 void ULsCommonAttributeSet::OnRep_DefensePower(const FGameplayAttributeData& OldValue)
 {
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ULsCommonAttributeSet, DefensePower, OldValue);
 }
 
 void ULsCommonAttributeSet::OnRep_MoveSpeed(const FGameplayAttributeData& OldValue)
 {
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ULsCommonAttributeSet, MoveSpeed, OldValue);
 }

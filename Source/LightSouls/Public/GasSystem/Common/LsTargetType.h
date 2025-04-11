@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actor/Common/LsCharacterBase.h"
 #include "UObject/Object.h"
 #include "LsTargetType.generated.h"
 
@@ -19,7 +18,7 @@ public:
 
 	/** Called to determine targets to apply gameplay effects to */
 	UFUNCTION(BlueprintNativeEvent)
-	void GetTargets(ALsCharacterBase* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<AActor*>& OutActors) const;
+	void GetTargets(ACharacter* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<AActor*>& OutActors) const;
 };
 
 /** Trivial target type that uses the owner */
@@ -33,7 +32,7 @@ public:
 	ULsTargetType_UseOwner() {}
 
 	/** Uses the passed in event data */
-	virtual void GetTargets_Implementation(ALsCharacterBase* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<AActor*>& OutActors) const override;
+	virtual void GetTargets_Implementation(ACharacter* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<AActor*>& OutActors) const override;
 };
 
 /** Trivial target type that pulls the target out of the event data */
@@ -47,5 +46,5 @@ public:
 	ULsTargetType_UseEventData() {}
 
 	/** Uses the passed in event data */
-	virtual void GetTargets_Implementation(ALsCharacterBase* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<AActor*>& OutActors) const override;
+	virtual void GetTargets_Implementation(ACharacter* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FHitResult>& OutHitResults, TArray<AActor*>& OutActors) const override;
 };

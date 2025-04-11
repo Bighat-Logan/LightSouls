@@ -24,6 +24,8 @@ ALsCharacterBase::ALsCharacterBase()
 	// Create the attribute set, this replicates by default
 	AttributeSet = CreateDefaultSubobject<ULsCommonAttributeSet>(TEXT("AttributeSet"));
 	
+	bAbilitiesInitialized = false;
+	
 }
 
 // Called when the game starts or when spawned
@@ -36,6 +38,33 @@ void ALsCharacterBase::BeginPlay()
 void ALsCharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+
+
+	check(AbilitySystemComponent);
+	
+	if (GetLocalRole() == ROLE_Authority && !bAbilitiesInitialized)
+	{
+		// Grant abilities, but only on the server	
+		for (TSubclassOf<ULsGameplayAbility>& StartupAbility : GameplayAbilities)
+		{
+			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(StartupAbility, GetCharacterLevel(), INDEX_NONE, this));
+		}
+
+		// Now apply passives
+		for (TSubclassOf<UGameplayEffect>& GameplayEffect : PassiveGameplayEffects)
+		{
+			FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+			EffectContext.AddSourceObject(this);
+
+			FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, GetCharacterLevel(), EffectContext);
+			if (NewHandle.IsValid())
+			{
+				FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
+			}
+		}
+		
+		bAbilitiesInitialized = true;
+	}
 }
 
 UAbilitySystemComponent* ALsCharacterBase::GetAbilitySystemComponent() const
@@ -47,6 +76,12 @@ void ALsCharacterBase::HandleDamage(float DamageAmount, const FHitResult& HitInf
                                     const FGameplayTagContainer& DamageTags, ALsCharacterBase* InstigatorCharacter, AActor* DamageCauser)
 {
 	OnDamaged(DamageAmount, HitInfo, DamageTags, InstigatorCharacter, DamageCauser);	
+}
+
+void ALsCharacterBase::HandleHealthChange(float DamageAmount, const FHitResult& HitInfo,
+	const FGameplayTagContainer& DamageTags, ALsCharacterBase* InstigatorCharacter, AActor* DamageCauser)
+{
+	OnHealthChange(DamageAmount, HitInfo, DamageTags, InstigatorCharacter, DamageCauser);
 }
 
 // Called every frame
@@ -90,5 +125,10 @@ void ALsCharacterBase::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+int32 ALsCharacterBase::GetCharacterLevel() const
+{
+	return CharacterLevel;
 }
 

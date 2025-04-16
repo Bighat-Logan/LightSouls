@@ -1,9 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GasSystem/GamePlayEffect/EffectExecutionCalculation/LsDamageExecution.h"
+#include "GasSystem/GameplayEffect/EffectExecutionCalculation/LsDamageExecution.h"
+
+#include "GameplayEffectExecutionCalculation.h"
 
 #include "GasSystem/Common/LsCommonAttributeSet.h"
+#include "GasSystem/GameplayEffect/LsGameplayEffectContext.h"
+#include "Utility/LsUtilityLibrary.h"
 
 struct RPGDamageStatics
 {
@@ -64,7 +68,27 @@ void ULsDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecu
 	//	Damage Done = Damage * AttackPower / DefensePower
 	//	If DefensePower is 0, it is treated as 1.0
 	// --------------------------------------
+	FGameplayEffectContextHandle ContextHandle = Spec.GetContext();
 
+	UE_LOG(LogTemp, Warning, TEXT("Execute_Implementation: Received Context Ptr: %p"), ContextHandle.Get());
+
+	// 使用 const_cast 如果你需要修改 Context (虽然不常见且需谨慎)
+	// 但通常读取时用 const FMyGameplayEffectContext*
+	const FLsGameplayEffectContext* EffectContext = static_cast<const FLsGameplayEffectContext*>(ContextHandle.Get());
+
+	float ActionValue = 1.0f;
+	if (EffectContext)
+	{
+		ActionValue = EffectContext->ActionValue;
+		if (EffectContext && EffectContext->ImpactForce != ELsImpactForce::None)
+		{
+			// 直接使用枚举值
+			OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(ULsCommonAttributeSet::GetImpactForceAttribute(),
+				EGameplayModOp::Override,
+				ULsUtilityLibrary::GetImpactForceValueFromEnum(EffectContext->ImpactForce)));
+		}
+	}
+	
 	float DefensePower = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DefensePowerDef, EvaluationParameters, DefensePower);
 	if (DefensePower == 0.0f)
@@ -78,7 +102,7 @@ void ULsDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecu
 	float Damage = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageDef, EvaluationParameters, Damage);
 
-	float DamageDone = Damage * AttackPower / DefensePower;
+	float DamageDone = Damage * ActionValue * AttackPower / DefensePower;
 	if (DamageDone > 0.f)
 	{
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().DamageProperty, EGameplayModOp::Additive, DamageDone));

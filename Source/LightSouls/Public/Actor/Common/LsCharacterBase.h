@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "InputActionValue.h"
+#include "Enums/LsGameplayEnums.h"
 #include "GameFramework/Character.h"
 #include "GasSystem/Ability/LsGameplayAbility.h"
 #include "GasSystem/Common/LsAbilitySystemComponent.h"
@@ -52,9 +53,14 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnHealthChange(float DamageAmount, const FHitResult& HitInfo, const struct FGameplayTagContainer& DamageTags, ALsCharacterBase* InstigatorCharacter, AActor* DamageCauser);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnImpactForceChange(ELsImpactForce ImpactForce, const FHitResult& HitInfo, const struct FGameplayTagContainer& ImpactTags, ALsCharacterBase* InstigatorCharacter, AActor* ImpactCauser);
+
 	virtual void HandleDamage(float DamageAmount, const FHitResult& HitInfo, const struct FGameplayTagContainer& DamageTags, ALsCharacterBase* InstigatorCharacter, AActor* DamageCauser);
 
 	virtual void HandleHealthChange(float DamageAmount, const FHitResult& HitInfo, const struct FGameplayTagContainer& DamageTags, ALsCharacterBase* InstigatorCharacter, AActor* DamageCauser);
+
+	virtual void HandleImpactForceChange(ELsImpactForce ImpactForce, const FHitResult& HitInfo, const struct FGameplayTagContainer& ImpactTags, ALsCharacterBase* InstigatorCharacter, AActor* ImpactCauser);
 
 protected:
 

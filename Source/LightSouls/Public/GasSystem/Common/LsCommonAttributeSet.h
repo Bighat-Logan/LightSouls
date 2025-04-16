@@ -72,6 +72,10 @@ public:
 	FGameplayAttributeData Damage;
 	ATTRIBUTE_ACCESSORS(ULsCommonAttributeSet, Damage)
 
+	/** ImpactForce is a 'temporary' attribute used to determine the impact force of an attack */
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	FGameplayAttributeData ImpactForce;
+	ATTRIBUTE_ACCESSORS(ULsCommonAttributeSet, ImpactForce)
 
 protected:
 	// These OnRep functions exist to make sure that the ability system internal representations are synchronized properly during replication
@@ -95,5 +99,8 @@ protected:
 	
 	UFUNCTION()
 	virtual void OnRep_MoveSpeed(const FGameplayAttributeData& OldValue);
+
+	UFUNCTION()
+	virtual void OnRep_ImpactForce(const FGameplayAttributeData& OldValue);
 	
 };

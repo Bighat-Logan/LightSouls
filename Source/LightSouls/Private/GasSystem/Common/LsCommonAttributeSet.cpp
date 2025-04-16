@@ -4,7 +4,9 @@
 #include "GasSystem/Common/LsCommonAttributeSet.h"
 #include "GameplayEffectExtension.h"
 #include "Actor/Common/LsCharacterBase.h"
+#include "Enums/LsGameplayEnums.h"
 #include "Net/UnrealNetwork.h"
+#include "Utility/LsUtilityLibrary.h"
 
 ULsCommonAttributeSet::ULsCommonAttributeSet()
 	: Health(1.f)
@@ -64,48 +66,58 @@ void ULsCommonAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 		TargetCharacter = Cast<ALsCharacterBase>(TargetActor);
 	}
 
+	AActor* SourceActor = nullptr;
+	AController* SourceController = nullptr;
+	ALsCharacterBase* SourceCharacter = nullptr;
+	if (Source && Source->AbilityActorInfo.IsValid() && Source->AbilityActorInfo->AvatarActor.IsValid())
+	{
+		SourceActor = Source->AbilityActorInfo->AvatarActor.Get();
+		SourceController = Source->AbilityActorInfo->PlayerController.Get();
+		if (SourceController == nullptr && SourceActor != nullptr)
+		{
+			if (APawn* Pawn = Cast<APawn>(SourceActor))
+			{
+				SourceController = Pawn->GetController();
+			}
+		}
+
+		// Use the controller to find the source pawn
+		if (SourceController)
+		{
+			SourceCharacter = Cast<ALsCharacterBase>(SourceController->GetPawn());
+		}
+		else
+		{
+			SourceCharacter = Cast<ALsCharacterBase>(SourceActor);
+		}
+
+		// Set the causer actor based on context if it's set
+		if (Context.GetEffectCauser())
+		{
+			SourceActor = Context.GetEffectCauser();
+		}
+	}
+
+
+	FHitResult HitResult;
+	if (Context.GetHitResult())
+	{
+		HitResult = *Context.GetHitResult();
+	}
+
+	if (Data.EvaluatedData.Attribute == GetImpactForceAttribute())
+	{
+		const ELsImpactForce LocalImpactForce = ULsUtilityLibrary::GetImpactForceEnumFromValue(GetImpactForce());
+		if (LocalImpactForce != ELsImpactForce::None)
+		{
+			TargetCharacter->HandleImpactForceChange(LocalImpactForce,HitResult, SourceTags, SourceCharacter, SourceActor);
+			SetImpactForce(0.f);
+		}
+	}
+	
 	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
 	{
-		// Get the Source actor
-		AActor* SourceActor = nullptr;
-		AController* SourceController = nullptr;
-		ALsCharacterBase* SourceCharacter = nullptr;
-		if (Source && Source->AbilityActorInfo.IsValid() && Source->AbilityActorInfo->AvatarActor.IsValid())
-		{
-			SourceActor = Source->AbilityActorInfo->AvatarActor.Get();
-			SourceController = Source->AbilityActorInfo->PlayerController.Get();
-			if (SourceController == nullptr && SourceActor != nullptr)
-			{
-				if (APawn* Pawn = Cast<APawn>(SourceActor))
-				{
-					SourceController = Pawn->GetController();
-				}
-			}
-
-			// Use the controller to find the source pawn
-			if (SourceController)
-			{
-				SourceCharacter = Cast<ALsCharacterBase>(SourceController->GetPawn());
-			}
-			else
-			{
-				SourceCharacter = Cast<ALsCharacterBase>(SourceActor);
-			}
-
-			// Set the causer actor based on context if it's set
-			if (Context.GetEffectCauser())
-			{
-				SourceActor = Context.GetEffectCauser();
-			}
-		}
-
-		// Try to extract a hit result
-		FHitResult HitResult;
-		if (Context.GetHitResult())
-		{
-			HitResult = *Context.GetHitResult();
-		}
-
+		
 		// Store a local copy of the amount of damage done and clear the damage attribute
 		const float LocalDamageDone = GetDamage();
 		SetDamage(0.f);
@@ -160,4 +172,9 @@ void ULsCommonAttributeSet::OnRep_DefensePower(const FGameplayAttributeData& Old
 void ULsCommonAttributeSet::OnRep_MoveSpeed(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(ULsCommonAttributeSet, MoveSpeed, OldValue);
+}
+
+void ULsCommonAttributeSet::OnRep_ImpactForce(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ULsCommonAttributeSet, ImpactForce, OldValue);
 }

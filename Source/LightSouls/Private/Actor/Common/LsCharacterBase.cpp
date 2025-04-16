@@ -5,6 +5,7 @@
 
 
 #include "EnhancedInputSubsystems.h"
+#include "Enums/LsGameplayEnums.h"
 #include "LightSouls/LightSoulsCharacter.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -82,6 +83,13 @@ void ALsCharacterBase::HandleHealthChange(float DamageAmount, const FHitResult& 
 	const FGameplayTagContainer& DamageTags, ALsCharacterBase* InstigatorCharacter, AActor* DamageCauser)
 {
 	OnHealthChange(DamageAmount, HitInfo, DamageTags, InstigatorCharacter, DamageCauser);
+}
+
+void ALsCharacterBase::HandleImpactForceChange(ELsImpactForce ImpactForce, const FHitResult& HitInfo, const struct FGameplayTagContainer& ImpactTags, ALsCharacterBase* InstigatorCharacter, AActor* ImpactCauser)
+{
+    // 调用蓝图事件
+    OnImpactForceChange(ImpactForce, HitInfo, ImpactTags, InstigatorCharacter, ImpactCauser);
+	
 }
 
 // Called every frame

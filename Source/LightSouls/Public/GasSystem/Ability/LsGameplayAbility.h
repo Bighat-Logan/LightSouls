@@ -38,4 +38,9 @@ public:
 	/** Applies a gameplay effect container, by creating and then applying the spec */
 	UFUNCTION(BlueprintCallable, Category = Ability, meta = (AutoCreateRefTerm = "EventData"))
 	virtual TArray<FActiveGameplayEffectHandle> ApplyEffectContainer(FGameplayTag ContainerTag, const FGameplayEventData& EventData, int32 OverrideGameplayLevel = -1);
+
+protected:
+	/** 从容器创建游戏效果规格列表 */
+	virtual void MakeGameplayEffectSpecsFromContainer(const FLsGameplayEffectContainer& Container, FLsGameplayEffectContainerSpec& OutSpec, int32 OverrideGameplayLevel) ;
+	
 };

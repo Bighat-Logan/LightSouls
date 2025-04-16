@@ -4,18 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "Enums/LsGameplayEnums.h"
 #include "LsCombatStateTransition.generated.h"
 
 /**
  * 
  */
-UENUM(BlueprintType)
-enum class EConditionType : uint8
-{
-	IA_Attack_Short,
-	IA_Attack_Long,
-};
-
 class ULsCombatStateTransition;
 
 USTRUCT(BlueprintType)

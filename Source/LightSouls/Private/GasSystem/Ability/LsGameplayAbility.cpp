@@ -5,9 +5,19 @@
 
 #include "Actor/Common/LsCharacterBase.h"
 #include "GasSystem/Common/LsAbilitySystemComponent.h"
+#include "GasSystem/GameplayEffect/LsGameplayEffectContext.h"
 
 
 ULsGameplayAbility::ULsGameplayAbility() {}
+
+void ULsGameplayAbility::MakeGameplayEffectSpecsFromContainer(const FLsGameplayEffectContainer& Container, FLsGameplayEffectContainerSpec& OutSpec, int32 OverrideGameplayLevel)
+{
+	// 默认实现：为每个效果类创建规格
+	for (const TSubclassOf<UGameplayEffect>& EffectClass : Container.TargetGameplayEffectClasses)
+	{
+		OutSpec.TargetGameplayEffectSpecs.Add(MakeOutgoingGameplayEffectSpec(EffectClass, OverrideGameplayLevel));
+	}
+}
 
 FLsGameplayEffectContainerSpec ULsGameplayAbility::MakeEffectContainerSpecFromContainer(const FLsGameplayEffectContainer& Container, const FGameplayEventData& EventData, int32 OverrideGameplayLevel)
 {
@@ -33,14 +43,11 @@ FLsGameplayEffectContainerSpec ULsGameplayAbility::MakeEffectContainerSpecFromCo
 		// If we don't have an override level, use the default on the ability itself
 		if (OverrideGameplayLevel == INDEX_NONE)
 		{
-			OverrideGameplayLevel = OverrideGameplayLevel = this->GetAbilityLevel(); //OwningASC->GetDefaultAbilityLevel();
+			OverrideGameplayLevel = OverrideGameplayLevel = this->GetAbilityLevel();
 		}
 
-		// Build GameplayEffectSpecs for each applied effect
-		for (const TSubclassOf<UGameplayEffect>& EffectClass : Container.TargetGameplayEffectClasses)
-		{
-			ReturnSpec.TargetGameplayEffectSpecs.Add(MakeOutgoingGameplayEffectSpec(EffectClass, OverrideGameplayLevel));
-		}
+		// 使用新的虚函数创建效果规格
+		MakeGameplayEffectSpecsFromContainer(Container, ReturnSpec, OverrideGameplayLevel);
 	}
 	return ReturnSpec;
 }
@@ -63,6 +70,7 @@ TArray<FActiveGameplayEffectHandle> ULsGameplayAbility::ApplyEffectContainerSpec
 	// Iterate list of effect specs and apply them to their target data
 	for (const FGameplayEffectSpecHandle& SpecHandle : ContainerSpec.TargetGameplayEffectSpecs)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("ApplyEffectContainerSpec Loop: Context Ptr before Apply: %p"), SpecHandle.Data->GetContext().IsValid() ? SpecHandle.Data->GetContext().Get() : nullptr); // 记录应用前的地址
 		AllEffects.Append(K2_ApplyGameplayEffectSpecToTarget(SpecHandle, ContainerSpec.TargetData));
 	}
 	return AllEffects;

@@ -28,23 +28,6 @@ FGameplayEffectSpecHandle ULsCombatGameplayAbility::MakeOutgoingLsGameplayEffect
         UE_LOG(LogTemp, Error, TEXT("SourceASC or EffectClass is null!"));
     }
     
-    // TSharedPtr<FLsGameplayEffectContext> MyContextPtr = MakeShared<FLsGameplayEffectContext>();
-    //
-    // MyContextPtr->AddInstigator(ASC->GetOwnerActor(), ASC->GetAvatarActor()); // 设置施加者
-    // MyContextPtr->SetAbility(this); // 设置来源 Ability
-    //
-    // // 如果有 HitResult，也在这里添加: MyContextPtr->AddHitResult(HitResult, true);
-    // // 设置源对象 (通常是 Ability 的 ActorInfo 的 AvatarActor 或 OwnerActor)
-    //
-    // MyContextPtr->AddSourceObject(this); // 或者根据需要设置其他对象
-    //
-    // MyContextPtr->SetActionValue(ActionValue);
-    // MyContextPtr->SetImpactForce(ImpactForce);
-    //
-    // FGameplayEffectContextHandle ContextHandle(MyContextPtr.Get());
-
-    
-
     FGameplayEffectContextHandle EffectContextHandle = ASC->MakeEffectContext();
 
     if (EffectContextHandle.IsValid())
@@ -93,16 +76,6 @@ FGameplayEffectSpecHandle ULsCombatGameplayAbility::MakeOutgoingLsGameplayEffect
         }
     }
 
-    
-    //
-    // FLsGameplayEffectContext* LsGameplayEffectContext = static_cast<FLsGameplayEffectContext*>(EffectContextHandle.Get());
-    // LsGameplayEffectContext->SetActionValue(ActionValue);
-    // LsGameplayEffectContext->SetImpactForce(ImpactForce);
-    // FGameplayEffectContextHandle ContextHandle(LsGameplayEffectContext);
-    //
-    // FGameplayEffectSpecHandle ReturnSpecHandle = ASC->MakeOutgoingSpec(EffectClass, Level, ContextHandle);
-    //
-    // UE_LOG(LogTemp, Warning, TEXT("MakeOutgoingLsGameplayEffectSpec: Context Ptr in ReturnSpecHandle: %p"), ReturnSpecHandle.IsValid() ? ReturnSpecHandle.Data->GetContext().Get() : nullptr);
     
     return ReturnSpecHandle;
 } 

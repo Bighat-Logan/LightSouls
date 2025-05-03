@@ -2,12 +2,13 @@
 
 #pragma once
 
-
+#include "CoreMinimal.h"
 #include "GameplayEffectTypes.h"
 #include "GasSystem/Ability/LsCombatGameplayAbility.h"
 #include "Enums/LsGameplayEnums.h"
 #include "LsGameplayEffectContext.generated.h"
 
+class UAbilitySystemComponent;
 
 USTRUCT(BlueprintType) // 标记为 USTRUCT
 struct FLsGameplayEffectContext : public FGameplayEffectContext 
@@ -15,13 +16,41 @@ struct FLsGameplayEffectContext : public FGameplayEffectContext
 	GENERATED_BODY()
 
 public:
+	FLsGameplayEffectContext()
+		: ActionValue(0.0f)
+		, ImpactForce(ELsImpactForce::Light)
+		, ImpactVector(FVector::ZeroVector)
+		, AEffectApplicator(nullptr)
+	{
+	}
+
 	/** 动作值 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Combat")
-	float ActionValue = 0.0f;
+	float ActionValue = 1.0f;
 
 	/** 冲击力 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Combat")
 	ELsImpactForce ImpactForce = ELsImpactForce::Light;
+
+	/** 冲击向量 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Combat")
+	FVector ImpactVector = FVector::ZeroVector;
+
+	/** 效果施加者 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Combat")
+	AActor* AEffectApplicator;
+
+	/** 获取效果施加者 */
+	AActor* GetEffectApplicator() const { return AEffectApplicator; }
+
+	/** 设置效果施加者 */
+	void SetEffectApplicator(AActor* InEffectApplicator) { AEffectApplicator = InEffectApplicator; }
+
+	/** 获取冲击向量 */
+	FVector GetImpactVector() const { return ImpactVector; }
+
+	/** 设置冲击向量 */
+	void SetImpactVector(const FVector& InImpactVector) { ImpactVector = InImpactVector; }
 
 	/** 设置动作值 */
 	void SetActionValue(float Value) { ActionValue = Value; }

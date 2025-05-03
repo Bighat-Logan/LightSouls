@@ -5,7 +5,9 @@
 
 
 #include "EnhancedInputSubsystems.h"
+#include "Components/CapsuleComponent.h"
 #include "Enums/LsGameplayEnums.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "LightSouls/LightSoulsCharacter.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -85,11 +87,39 @@ void ALsCharacterBase::HandleHealthChange(float DamageAmount, const FHitResult& 
 	OnHealthChange(DamageAmount, HitInfo, DamageTags, InstigatorCharacter, DamageCauser);
 }
 
-void ALsCharacterBase::HandleImpactForceChange(ELsImpactForce ImpactForce, const FHitResult& HitInfo, const struct FGameplayTagContainer& ImpactTags, ALsCharacterBase* InstigatorCharacter, AActor* ImpactCauser)
+void ALsCharacterBase::HandleImpactForceChange(ELsImpactForce ImpactForce, FVector ImpactForceVector, const FHitResult& HitInfo,
+	const struct FGameplayTagContainer& ImpactTags, ALsCharacterBase* InstigatorCharacter, AActor* ImpactCauser)
 {
     // 调用蓝图事件
-    OnImpactForceChange(ImpactForce, HitInfo, ImpactTags, InstigatorCharacter, ImpactCauser);
+    OnImpactForceChange(ImpactForce, ImpactForceVector,HitInfo, ImpactTags, InstigatorCharacter, ImpactCauser);
+}
+
+void ALsCharacterBase::HandleDeath(float DamageAmount, const struct FGameplayTagContainer& DamageTags, ALsCharacterBase* InstigatorCharacter, AActor* DamageCauser)
+{
+    // 禁用角色移动
+    GetCharacterMovement()->DisableMovement();
+    
+    // 禁用碰撞
+    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    
+    // 禁用所有能力
+    if (AbilitySystemComponent)
+    {
+        AbilitySystemComponent->CancelAllAbilities();
+        AbilitySystemComponent->RemoveAllGameplayCues();
+    }
 	
+    // 设置生命值为0
+    if (AttributeSet)
+    {
+        AttributeSet->SetHealth(0.0f);
+    }
+    
+    // 可以在这里添加其他死亡相关的逻辑
+    // 比如播放死亡动画、生成特效等
+    UE_LOG(LogTemp, Log, TEXT("%s has died."), *GetName());
+
+	OnDeath(DamageAmount,DamageTags,InstigatorCharacter,DamageCauser);
 }
 
 // Called every frame

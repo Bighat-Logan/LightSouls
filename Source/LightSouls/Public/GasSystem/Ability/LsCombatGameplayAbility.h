@@ -27,7 +27,9 @@ public:
 
 
 protected:
-    virtual void MakeGameplayEffectSpecsFromContainer(const FLsGameplayEffectContainer& Container, FLsGameplayEffectContainerSpec& OutSpec, int32 OverrideGameplayLevel) override;
+    virtual void MakeGameplayEffectSpecsFromContainer(const FLsGameplayEffectContainer& Container, const FGameplayEventData& EventData,
+        FLsGameplayEffectContainerSpec& OutSpec, int32 OverrideGameplayLevel) override;
     
-    FGameplayEffectSpecHandle MakeOutgoingLsGameplayEffectSpec(TSubclassOf<UGameplayEffect> EffectClass, float Level = 1.0f) const;
+    FGameplayEffectSpecHandle MakeOutgoingLsGameplayEffectSpec(TSubclassOf<UGameplayEffect> EffectClass,
+        const FGameplayEventData& EventData,float Level = 1.0f) const;
 }; 

@@ -76,6 +76,18 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
 	FGameplayAttributeData ImpactForce;
 	ATTRIBUTE_ACCESSORS(ULsCommonAttributeSet, ImpactForce)
+	
+	// UPROPERTY(BlueprintReadOnly, Category = "Combat") // 添加复制宏如果需要
+	// FVector ImpactForceVector;
+	//
+	//
+	//
+	// FVector GetImpactForceVector() const { return ImpactForceVector; }
+	//
+	// void SetImpactForceVector(FVector newValue)  { ImpactForceVector = newValue; }
+
+	
+
 
 protected:
 	// These OnRep functions exist to make sure that the ability system internal representations are synchronized properly during replication

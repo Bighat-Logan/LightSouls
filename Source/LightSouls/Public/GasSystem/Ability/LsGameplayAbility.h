@@ -41,6 +41,6 @@ public:
 
 protected:
 	/** 从容器创建游戏效果规格列表 */
-	virtual void MakeGameplayEffectSpecsFromContainer(const FLsGameplayEffectContainer& Container, FLsGameplayEffectContainerSpec& OutSpec, int32 OverrideGameplayLevel) ;
+	virtual void MakeGameplayEffectSpecsFromContainer(const FLsGameplayEffectContainer& Container,const FGameplayEventData& EventData, FLsGameplayEffectContainerSpec& OutSpec, int32 OverrideGameplayLevel) ;
 	
 };

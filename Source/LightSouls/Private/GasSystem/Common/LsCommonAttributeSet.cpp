@@ -5,6 +5,7 @@
 #include "GameplayEffectExtension.h"
 #include "Actor/Common/LsCharacterBase.h"
 #include "Enums/LsGameplayEnums.h"
+#include "GasSystem/GameplayEffect/LsGameplayEffectContext.h"
 #include "Net/UnrealNetwork.h"
 #include "Utility/LsUtilityLibrary.h"
 
@@ -108,9 +109,10 @@ void ULsCommonAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCa
 	if (Data.EvaluatedData.Attribute == GetImpactForceAttribute())
 	{
 		const ELsImpactForce LocalImpactForce = ULsUtilityLibrary::GetImpactForceEnumFromValue(GetImpactForce());
-		if (LocalImpactForce != ELsImpactForce::None)
+		const FLsGameplayEffectContext* EffectContext = static_cast<const FLsGameplayEffectContext*>(Context.Get());
+		if (LocalImpactForce != ELsImpactForce::None && EffectContext)
 		{
-			TargetCharacter->HandleImpactForceChange(LocalImpactForce,HitResult, SourceTags, SourceCharacter, SourceActor);
+			TargetCharacter->HandleImpactForceChange(LocalImpactForce,EffectContext->GetImpactVector(),HitResult, SourceTags, SourceCharacter, SourceActor);
 			SetImpactForce(0.f);
 		}
 	}

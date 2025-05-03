@@ -21,14 +21,13 @@ class LIGHTSOULS_API ALsCharacterBase : public ACharacter,public IAbilitySystemI
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	ALsCharacterBase();
 
 	virtual void Tick(float DeltaTime) override;
 
 	/** The component used to handle ability system interactions */
-	UPROPERTY()
-	ULsAbilitySystemComponent* AbilitySystemComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
+	UAbilitySystemComponent* AbilitySystemComponent;
 
 	/** List of attributes modified by the ability system */
 	UPROPERTY()
@@ -54,13 +53,20 @@ public:
 	void OnHealthChange(float DamageAmount, const FHitResult& HitInfo, const struct FGameplayTagContainer& DamageTags, ALsCharacterBase* InstigatorCharacter, AActor* DamageCauser);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnImpactForceChange(ELsImpactForce ImpactForce, const FHitResult& HitInfo, const struct FGameplayTagContainer& ImpactTags, ALsCharacterBase* InstigatorCharacter, AActor* ImpactCauser);
+	void OnDeath(float DamageAmount, const struct FGameplayTagContainer& DamageTags, ALsCharacterBase* InstigatorCharacter, AActor* DamageCauser);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnImpactForceChange(ELsImpactForce ImpactForce, FVector ImpactForceVector,const FHitResult& HitInfo, const struct FGameplayTagContainer& ImpactTags, ALsCharacterBase* InstigatorCharacter, AActor* ImpactCauser);
 
 	virtual void HandleDamage(float DamageAmount, const FHitResult& HitInfo, const struct FGameplayTagContainer& DamageTags, ALsCharacterBase* InstigatorCharacter, AActor* DamageCauser);
 
 	virtual void HandleHealthChange(float DamageAmount, const FHitResult& HitInfo, const struct FGameplayTagContainer& DamageTags, ALsCharacterBase* InstigatorCharacter, AActor* DamageCauser);
+	void HandleImpactForceChange(ELsImpactForce ImpactForce, FVector ImpactForceVector, const FHitResult& HitInfo,
+	                             const FGameplayTagContainer& ImpactTags, ALsCharacterBase* InstigatorCharacter,
+	                             AActor* ImpactCauser);
 
-	virtual void HandleImpactForceChange(ELsImpactForce ImpactForce, const FHitResult& HitInfo, const struct FGameplayTagContainer& ImpactTags, ALsCharacterBase* InstigatorCharacter, AActor* ImpactCauser);
+	UFUNCTION(BlueprintCallable)
+	virtual void HandleDeath(float DamageAmount, const struct FGameplayTagContainer& DamageTags, ALsCharacterBase* InstigatorCharacter, AActor* DamageCauser);
 
 protected:
 

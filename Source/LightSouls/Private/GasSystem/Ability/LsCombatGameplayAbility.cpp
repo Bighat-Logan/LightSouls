@@ -2,6 +2,7 @@
 #include "GasSystem/Ability/LsCombatGameplayAbility.h"
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "GasSystem/Common/LsCustomEventData.h"
 #include "GasSystem/GameplayEffect/LsGameplayEffectContext.h"
 
 ULsCombatGameplayAbility::ULsCombatGameplayAbility()
@@ -9,16 +10,17 @@ ULsCombatGameplayAbility::ULsCombatGameplayAbility()
 }
 
 void ULsCombatGameplayAbility::MakeGameplayEffectSpecsFromContainer(const FLsGameplayEffectContainer& Container,
-    FLsGameplayEffectContainerSpec& OutSpec, int32 OverrideGameplayLevel)
+    const FGameplayEventData& EventData,FLsGameplayEffectContainerSpec& OutSpec, int32 OverrideGameplayLevel)
 {
     for (const TSubclassOf<UGameplayEffect>& EffectClass : Container.TargetGameplayEffectClasses)
     {
-        OutSpec.TargetGameplayEffectSpecs.Add(MakeOutgoingLsGameplayEffectSpec(EffectClass, OverrideGameplayLevel));
+        OutSpec.TargetGameplayEffectSpecs.Add(MakeOutgoingLsGameplayEffectSpec(EffectClass, EventData , OverrideGameplayLevel));
     }
     UE_LOG(LogTemp, Warning, TEXT("WCNM"));
 }
 
-FGameplayEffectSpecHandle ULsCombatGameplayAbility::MakeOutgoingLsGameplayEffectSpec(TSubclassOf<UGameplayEffect> EffectClass, float Level) const
+FGameplayEffectSpecHandle ULsCombatGameplayAbility::MakeOutgoingLsGameplayEffectSpec(TSubclassOf<UGameplayEffect> EffectClass,
+    const FGameplayEventData& EventData,float Level) const
 {
     
     UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
@@ -35,13 +37,17 @@ FGameplayEffectSpecHandle ULsCombatGameplayAbility::MakeOutgoingLsGameplayEffect
         // 使用 GetMutable() 获取非 const 指针以便修改
         // 同时进行类型转换，最好加上检查确保转换是安全的
         FLsGameplayEffectContext* LsGameplayEffectContext = static_cast<FLsGameplayEffectContext*>(EffectContextHandle.Get()); // 使用 GetMutable()
-
-        // （可选但推荐）检查转换后的指针是否为空，或进行更安全的类型检查
-        // 例如：FLsGameplayEffectContext* LsGameplayEffectContext = Cast<FLsGameplayEffectContext>(EffectContextHandle.GetMutable());
+        
         if (LsGameplayEffectContext) // 确保转换成功（如果类型不匹配，static_cast 可能不会返回 null，但访问会出错）
         {
             LsGameplayEffectContext->SetActionValue(ActionValue);
             LsGameplayEffectContext->SetImpactForce(ImpactForce);
+            
+            // 从EventData中获取ULsCustomEventData并设置ImpactVector
+            if (const ULsCustomEventData* CustomEventData = Cast<ULsCustomEventData>(EventData.OptionalObject))
+            {
+                LsGameplayEffectContext->SetImpactVector(CustomEventData->VectorValue);
+            }
             // 在这里设置你自定义 Context 的其他数据
         }
         else

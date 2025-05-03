@@ -10,7 +10,8 @@
 
 ULsGameplayAbility::ULsGameplayAbility() {}
 
-void ULsGameplayAbility::MakeGameplayEffectSpecsFromContainer(const FLsGameplayEffectContainer& Container, FLsGameplayEffectContainerSpec& OutSpec, int32 OverrideGameplayLevel)
+void ULsGameplayAbility::MakeGameplayEffectSpecsFromContainer(const FLsGameplayEffectContainer& Container, const FGameplayEventData& EventData,
+	FLsGameplayEffectContainerSpec& OutSpec, int32 OverrideGameplayLevel)
 {
 	// 默认实现：为每个效果类创建规格
 	for (const TSubclassOf<UGameplayEffect>& EffectClass : Container.TargetGameplayEffectClasses)
@@ -47,7 +48,7 @@ FLsGameplayEffectContainerSpec ULsGameplayAbility::MakeEffectContainerSpecFromCo
 		}
 
 		// 使用新的虚函数创建效果规格
-		MakeGameplayEffectSpecsFromContainer(Container, ReturnSpec, OverrideGameplayLevel);
+		MakeGameplayEffectSpecsFromContainer(Container, EventData,ReturnSpec, OverrideGameplayLevel);
 	}
 	return ReturnSpec;
 }

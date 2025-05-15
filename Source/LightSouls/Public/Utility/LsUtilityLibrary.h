@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "GasSystem/Ability/LsCombatGameplayAbility.h"
+#include "GameBase/LsGameInstance.h"
 #include "LsUtilityLibrary.generated.h"
 
 /**
@@ -108,6 +109,11 @@ public:
 		USkeletalMeshComponent* MeshComponent
 	);
 
-	
+    // 切换游戏内菜单
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    static void ToggleInGameMenu(UCommonActivatableWidgetStack* WidgetStack);
 
+    // 获取游戏实例
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Game Instance")
+    static ULsGameInstance* GetLsGameInstance(const UObject* WorldContextObject);
 }; 

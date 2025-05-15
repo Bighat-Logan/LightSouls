@@ -21,11 +21,14 @@ class LIGHTSOULS_API ALsPlayerController : public APlayerController
 	virtual void BeginPlay() override;
 
 public:
-
+	UFUNCTION(BlueprintImplementableEvent)
+	void HandleOptionAction();
+	
 	virtual void SetupInputComponent() override;
 
 	virtual void OnPossess(APawn* InPawn) override;
-	
+	virtual void OnUnPossess() override;
+
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
@@ -45,4 +48,7 @@ public:
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* AttckAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* OptionAction;
 };

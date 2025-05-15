@@ -1,5 +1,11 @@
 #include "Utility/LsUtilityLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "GameBase/LsGameInstance.h"
+#include "Kismet/GameplayStatics.h"
+#include "CommonHardwareVisibilityBorder.h"
+#include "GameFramework/PlayerController.h"
+#include "GasSystem/Tag/LsGameplayTag.h"
+#include "Widgets/CommonActivatableWidgetContainer.h"
 
 // Define a log category for easier debugging
 DEFINE_LOG_CATEGORY_STATIC(LogLsUtilityLibrary, Log, All);
@@ -392,4 +398,86 @@ TArray<UMaterialInstanceDynamic*> ULsUtilityLibrary::EnsureSkeletalMeshMaterials
 
 	UE_LOG(LogLsUtilityLibrary, Log, TEXT("为组件 %s 完成材质动态化处理。最终获得 %d 个有效 MID。"), *MeshComponent->GetName(), ResultMIDs.Num());
 	return ResultMIDs; // 返回包含所有有效 MID 的数组
+}
+
+ULsGameInstance* ULsUtilityLibrary::GetLsGameInstance(const UObject* WorldContextObject)
+{
+    if (!WorldContextObject)
+    {
+        return nullptr;
+    }
+
+    UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+    if (!World)
+    {
+        return nullptr;
+    }
+
+    return Cast<ULsGameInstance>(World->GetGameInstance());
+}
+
+void ULsUtilityLibrary::ToggleInGameMenu(UCommonActivatableWidgetStack* WidgetStack)
+{
+    if (!WidgetStack)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("ToggleInGameMenu: WidgetStack is null"));
+        return;
+    }
+
+    // 获取游戏实例
+    ULsGameInstance* GameInstance = GetLsGameInstance(WidgetStack);
+    if (!GameInstance)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("ToggleInGameMenu: Failed to get GameInstance"));
+        return;
+    }
+
+    // 获取玩家控制器
+    APlayerController* PC = Cast<APlayerController>(WidgetStack->GetOwningPlayer());
+    if (!PC)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("ToggleInGameMenu: Failed to get PlayerController"));
+        return;
+    }
+
+    // 定义菜单标签
+    static const FGameplayTag MenuTag = FGameplayTag::RequestGameplayTag(FLsGameplayTags::Get().Player_State_InOptionMenu.GetTagName());
+
+    // 检查是否已经显示菜单
+    bool bIsMenuVisible = GameInstance->GlobalGameTags.HasTag(MenuTag);
+
+    if (!bIsMenuVisible)
+    {
+        // 显示菜单
+        WidgetStack->SetVisibility(ESlateVisibility::Visible);
+        
+        // 暂停游戏
+        PC->SetPause(true);
+        
+        // 显示光标
+        PC->bShowMouseCursor = true;
+        PC->SetInputMode(FInputModeGameAndUI());
+        
+        // 添加标签
+        GameInstance->GlobalGameTags.AddTag(MenuTag);
+        
+        UE_LOG(LogTemp, Log, TEXT("ToggleInGameMenu: Menu shown"));
+    }
+    else
+    {
+        // 隐藏菜单
+        WidgetStack->SetVisibility(ESlateVisibility::Hidden);
+        
+        // 继续游戏
+        PC->SetPause(false);
+        
+        // 隐藏光标
+        PC->bShowMouseCursor = false;
+        PC->SetInputMode(FInputModeGameOnly());
+        
+        // 移除标签
+        GameInstance->GlobalGameTags.RemoveTag(MenuTag);
+        
+        UE_LOG(LogTemp, Log, TEXT("ToggleInGameMenu: Menu hidden"));
+    }
 }

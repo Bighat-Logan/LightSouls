@@ -16,8 +16,14 @@ public:
 	static const FLsGameplayTags& Get() { return GameplayTags;}
 	static void InitializeNativeGameplayTags();
 
-	FGameplayTag PlayerState_OnLadder;
-	FGameplayTag PlayerState_Climbing;
+
+	FGameplayTag UI_WidgetStack_MainMenu;
+	FGameplayTag UI_WidgetStack_InGameMenu;
+
+
+	FGameplayTag Player_State_InOptionMenu;
+	FGameplayTag Player_State_InMainMenu;
+	
 	
 	FGameplayTag PlayerInputState_BlockInput;
 
@@ -29,6 +35,9 @@ public:
 	FGameplayTag Player_Action_State;
 
 	FGameplayTag Player_Action_State_Entry;
+
+	FGameplayTag Player_Action_State_OnLadder;
+	FGameplayTag Player_Action_State_Climbing;
 
 	FGameplayTag Player_Action_State_Sword_Combo_1;
 	FGameplayTag Player_Action_State_Sword_Combo_2;

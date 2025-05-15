@@ -10,14 +10,27 @@ FLsGameplayTags FLsGameplayTags::GameplayTags;
 
 void FLsGameplayTags::InitializeNativeGameplayTags()
 {
-	GameplayTags.PlayerState_OnLadder = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("PlayerState.OnLadder"),
+	GameplayTags.Player_Action_State_OnLadder = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("PlayerActionState.OnLadder"),
 		FString("OnLadder State")
 		);
 
-	GameplayTags.PlayerState_Climbing = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("PlayerState.Climbing"),
+	GameplayTags.Player_Action_State_Climbing = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("PlayerActionState.Climbing"),
 		FString("Climbing State")
+		);
+	
+
+
+	
+	GameplayTags.Player_State_InOptionMenu = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("PlayerState.InOptionMenu"),
+		FString("InOptionMenu State")
+		);
+
+	GameplayTags.Player_State_InMainMenu = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("PlayerState.InMainMenu"),
+		FString("InMainMenu State")
 		);
 
 	GameplayTags.PlayerInputState_BlockInput = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -25,6 +38,11 @@ void FLsGameplayTags::InitializeNativeGameplayTags()
 		FString("Block input")
 		);
 
+
+
+
+
+	
 	
 	GameplayTags.Ability_Melee = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Ability.Melee"),
@@ -62,6 +80,17 @@ void FLsGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Player_Action_State_Sword_Combo_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("PlayerActionState.Sword_Combo_3"),
 		FString("Player Action State Sword Combo_3")
+		);
+
+
+	GameplayTags.UI_WidgetStack_MainMenu = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("UI.WidgetStack.MainMenu"),
+		FString("UI MainMenu Widget Stack")
+		);
+
+	GameplayTags.UI_WidgetStack_InGameMenu = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("UI.WidgetStack.InGameMenu"),
+		FString("UI InGameMenu Widget Stack")
 		);
 
 

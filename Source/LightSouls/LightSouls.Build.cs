@@ -16,7 +16,8 @@ public class LightSouls : ModuleRules
 				"EnhancedInput", 
 				"GameplayAbilities",
 				"GameplayTags",
-				"GameplayTasks"
+				"GameplayTasks", 
+				"CommonUI"
 			}
 		);
 
@@ -28,7 +29,8 @@ public class LightSouls : ModuleRules
 				"AIModule", 
 				"EnhancedInput",
 				"GameplayTags",
-				"GameplayAbilities"
+				"GameplayAbilities",
+				"CommonUI"
 			}
 		);
 	}

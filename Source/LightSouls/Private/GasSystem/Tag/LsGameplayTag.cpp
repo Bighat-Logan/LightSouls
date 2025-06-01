@@ -21,6 +21,15 @@ void FLsGameplayTags::InitializeNativeGameplayTags()
 		);
 	
 
+	GameplayTags.Player_State_Running = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("PlayerState.Running"),
+		FString("Running State")
+		);
+
+	GameplayTags.Player_State_LockingOnTarget = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("PlayerState.LockingOnTarget"),
+		FString("LockingOnTarget State")
+		);
 
 	
 	GameplayTags.Player_State_InOptionMenu = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -47,6 +56,11 @@ void FLsGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Ability_Melee = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Ability.Melee"),
 	FString("Block input")
+	);
+
+	GameplayTags.Ability_AISelectMeleeAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Ability.AISelectMeleeAttack"),
+	FString("AISelectMeleeAttack")
 	);
 
 	GameplayTags.Event_Montage_Shared_WeaponHit = UGameplayTagsManager::Get().AddNativeGameplayTag(

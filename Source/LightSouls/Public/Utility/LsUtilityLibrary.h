@@ -116,4 +116,14 @@ public:
     // 获取游戏实例
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Game Instance")
     static ULsGameInstance* GetLsGameInstance(const UObject* WorldContextObject);
+
+    /**
+     * 计算一个点到平面的距离
+     * @param Point 要计算距离的点
+     * @param PlaneOrigin 平面上的一个点
+     * @param PlaneNormal 平面的法向量（必须是单位向量）
+     * @return 点到平面的距离（正值表示点在平面法向量方向，负值表示在反方向）
+     */
+    UFUNCTION(BlueprintPure, Category = "LightSouls|Utility|Math")
+    static float GetDistanceToPlane(const FVector& Point, const FVector& PlaneOrigin, const FVector& PlaneNormal);
 }; 

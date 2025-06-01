@@ -3,6 +3,7 @@
 
 #include "ActorComponent/ComboComponent/LsComboActorComponent.h"
 
+#include "AbilitySystemComponent.h"
 #include "GameplayTagsManager.h"
 #include "ActorComponent/ComboComponent/DataAsset/LsCombatStateTransition.h"
 #include "GasSystem/Tag/LsGameplayTag.h"

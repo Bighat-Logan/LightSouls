@@ -23,12 +23,17 @@ public:
 
 	FGameplayTag Player_State_InOptionMenu;
 	FGameplayTag Player_State_InMainMenu;
+
+
+	FGameplayTag Player_State_Running;
+	FGameplayTag Player_State_LockingOnTarget;
 	
 	
 	FGameplayTag PlayerInputState_BlockInput;
 
 
 	FGameplayTag Ability_Melee;
+	FGameplayTag Ability_AISelectMeleeAttack;
 
 	FGameplayTag Event_Montage_Shared_WeaponHit;
 

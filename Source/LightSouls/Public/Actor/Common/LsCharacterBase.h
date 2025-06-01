@@ -68,6 +68,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void HandleDeath(float DamageAmount, const struct FGameplayTagContainer& DamageTags, ALsCharacterBase* InstigatorCharacter, AActor* DamageCauser);
 
+	/** 切换锁定目标的最小时间间隔（秒） */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LockOn")
+	float MinTargetSwitchInterval;
+
+	/** 上次切换目标的时间 */
+	UPROPERTY()
+	float LastTargetSwitchTime;
+
 protected:
 
 	/** Passive gameplay effects applied on creation */
@@ -76,7 +84,7 @@ protected:
 
 	/** Abilities to grant to this character on creation. These will be activated by tag or event and are not bound to specific inputs */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Abilities)
-	TArray<TSubclassOf<ULsGameplayAbility>> GameplayAbilities;
+	TArray<TSubclassOf<UGameplayAbility>> GameplayAbilities;
 
 	/** If true we have initialized our abilities */
 	UPROPERTY()

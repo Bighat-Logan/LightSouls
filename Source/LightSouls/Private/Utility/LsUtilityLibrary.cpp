@@ -481,3 +481,18 @@ void ULsUtilityLibrary::ToggleInGameMenu(UCommonActivatableWidgetStack* WidgetSt
         UE_LOG(LogTemp, Log, TEXT("ToggleInGameMenu: Menu hidden"));
     }
 }
+
+float ULsUtilityLibrary::GetDistanceToPlane(const FVector& Point, const FVector& PlaneOrigin, const FVector& PlaneNormal)
+{
+    // 确保法向量是单位向量
+    FVector NormalizedPlaneNormal = PlaneNormal.GetSafeNormal();
+    
+    // 计算从平面原点到目标点的向量
+    FVector PointToOrigin = Point - PlaneOrigin;
+    
+    // 计算点到平面的距离（点积）
+    // 如果法向量是单位向量，这个点积就是点到平面的距离
+    float Distance = FVector::DotProduct(PointToOrigin, NormalizedPlaneNormal);
+    
+    return Distance;
+}

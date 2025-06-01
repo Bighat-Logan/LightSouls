@@ -1,0 +1,1 @@
+1.添加WidgetManager接口，改造LsWidgetStackSubsystem

@@ -5,9 +5,11 @@
 
 
 #include "EnhancedInputSubsystems.h"
+#include "ActorComponent/LockOnComponent/LockOnComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Enums/LsGameplayEnums.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GasSystem/Tag/LsGameplayTag.h"
 #include "LightSouls/LightSoulsCharacter.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -29,6 +31,9 @@ ALsCharacterBase::ALsCharacterBase()
 	
 	bAbilitiesInitialized = false;
 	
+	// 设置默认值
+	MinTargetSwitchInterval = 0.2f; // 默认200毫秒
+	LastTargetSwitchTime = 0.0f;
 }
 
 // Called when the game starts or when spawned
@@ -48,7 +53,7 @@ void ALsCharacterBase::PossessedBy(AController* NewController)
 	if (GetLocalRole() == ROLE_Authority && !bAbilitiesInitialized)
 	{
 		// Grant abilities, but only on the server	
-		for (TSubclassOf<ULsGameplayAbility>& StartupAbility : GameplayAbilities)
+		for (TSubclassOf<UGameplayAbility>& StartupAbility : GameplayAbilities)
 		{
 			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(StartupAbility, GetCharacterLevel(), INDEX_NONE, this));
 		}
@@ -156,13 +161,36 @@ void ALsCharacterBase::Look(const FInputActionValue& Value)
 
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
+	bool isLockingOnTarget = false;
 
-	if (Controller != nullptr)
-	{
-		// add yaw and pitch input to controller
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
-	}
+    if (UAbilitySystemComponent* ASC = this->FindComponentByClass<UAbilitySystemComponent>())
+    {
+        FGameplayTagContainer GameplayTagContainer;
+        ASC->GetOwnedGameplayTags(GameplayTagContainer);
+        isLockingOnTarget = GameplayTagContainer.HasTag(FLsGameplayTags::Get().Player_State_LockingOnTarget);
+    }
+
+    if (Controller != nullptr && !isLockingOnTarget)
+    {
+        // add yaw and pitch input to controller
+        AddControllerYawInput(LookAxisVector.X);
+        AddControllerPitchInput(LookAxisVector.Y);
+    }
+
+    if (isLockingOnTarget)
+    {
+        if (ULockOnComponent* LockOnComponent = FindComponentByClass<ULockOnComponent>())
+        {
+            // 检查是否达到最小时间间隔
+            float CurrentTime = GetWorld()->GetTimeSeconds();
+            if (CurrentTime - LastTargetSwitchTime >= MinTargetSwitchInterval)
+            {
+                LockOnComponent->SwitchLockOnTarget(LookAxisVector);
+                LastTargetSwitchTime = CurrentTime;
+
+            }
+        }
+    }
 }
 
 int32 ALsCharacterBase::GetCharacterLevel() const

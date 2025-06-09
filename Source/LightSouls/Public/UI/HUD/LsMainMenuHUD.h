@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "UI/CommonUI/Widget/LsMainMenuCAWidget.h"
+#include "UI/CommonUI/Widget/LsCommonActivatableWidget.h"
 #include "LsMainMenuHUD.generated.h"
 
 /**
@@ -22,7 +22,7 @@ public:
 	TSubclassOf<UUserWidget> MainMenuWidgetClass;
 
 	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<ULsMainMenuCAWidget> ULmMainMenuStack;
+	TObjectPtr<ULsCommonActivatableWidget> ULmMainMenuStack;
 
 
 protected:

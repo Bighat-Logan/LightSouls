@@ -132,14 +132,26 @@ const FGameplayTag ULsComboActorComponent::FindCurrentStateData(AActor* TargetAc
 	{
 		FGameplayTagContainer GameplayTagContainer;
 		ASC->GetOwnedGameplayTags(GameplayTagContainer);
-		// GameplayTagContainer.HasAny(FLsGameplayTags::Get().Player_Action_State);
 
-		// 精确匹配检查
-		if (GameplayTagContainer.Num() == 1)
+		// 检查GameplayTagContainer中的标签是否为Player_Action_State的子标签
+		TArray<FGameplayTag> ChildTags;
+		for (const FGameplayTag& Tag : GameplayTagContainer)
 		{
-			return GameplayTagContainer.GetByIndex(0);
+			if (Tag.MatchesTag(FLsGameplayTags::Get().Player_Action_State))
+			{
+				ChildTags.Add(Tag);
+			}
 		}
-		UE_LOG(LogTemp, Error, TEXT("Player has more than 1 Action tag !!!"));
+
+		// 如果只有一个匹配的子标签，返回它
+		if (ChildTags.Num() == 1)
+		{
+			return ChildTags[0];
+		}
+		else if (ChildTags.Num() > 1)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Player has more than 1 Action tag !!!"));
+		}
 	}
 	return FGameplayTag::EmptyTag;
 }

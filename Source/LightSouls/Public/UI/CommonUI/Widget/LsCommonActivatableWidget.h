@@ -4,17 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
-#include "CommonActivatableWidgetSwitcher.h"
-
-#include "LsMainMenuCAWidget.generated.h"
+#include "LsCommonActivatableWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LIGHTSOULS_API ULsMainMenuCAWidget : public UCommonActivatableWidget
+class LIGHTSOULS_API ULsCommonActivatableWidget : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
-
-
 };

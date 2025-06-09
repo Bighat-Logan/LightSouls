@@ -21,6 +21,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
+	virtual void PossessedBy(AController* NewController) override;
 
 
 	/** Camera boom positioning the camera behind the character */
@@ -41,4 +43,11 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	/** 初始化Ability Actor信息 */
+	void InitAbilityActorInfo();
+
+	/** 当ASC注册时广播 */
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnAscRegistered, UAbilitySystemComponent*);
+	FOnAscRegistered OnAscRegistered;
 };

@@ -12,7 +12,7 @@ void ALsMainMenuHUD::BeginPlay()
 	if (MainMenuWidgetClass)
 	{
 		// 创建 MainMenuWidget 实例 
-		ULmMainMenuStack = CreateWidget<ULsMainMenuCAWidget>(GetWorld(), MainMenuWidgetClass);
+		ULmMainMenuStack = CreateWidget<ULsCommonActivatableWidget>(GetWorld(), MainMenuWidgetClass);
 		if (ULmMainMenuStack)
 		{
 			// 将 MainMenuWidget 添加到视口中 

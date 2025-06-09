@@ -4,7 +4,10 @@
 #include "Actor/Player/LsPlayerCharacter.h"
 
 #include "Components/CapsuleComponent.h"
+#include "GameBase/LsPlayerController.h"
+#include "GameBase/LsPlayerState.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "UI/HUD/LsInGameMenu.h"
 
 
 // Sets default values
@@ -65,5 +68,27 @@ void ALsPlayerCharacter::Tick(float DeltaTime)
 void ALsPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void ALsPlayerCharacter::InitAbilityActorInfo()
+{
+	AbilitySystemComponent->InitAbilityActorInfo(this,this);
+
+	OnAscRegistered.Broadcast(AbilitySystemComponent);
+
+	if (ALsPlayerController* LsPlayerController = Cast<ALsPlayerController>(GetController()))
+	{
+		if (ALsInGameMenu* LsInGameHUD = Cast<ALsInGameMenu>(LsPlayerController->GetHUD()))
+		{
+			LsInGameHUD->InitPlayStatsWidget(LsPlayerController, AbilitySystemComponent, AttributeSet);
+		}
+	}
+}
+
+void ALsPlayerCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	
+	InitAbilityActorInfo();
 }
 

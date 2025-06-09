@@ -3,7 +3,7 @@
 
 #include "UI/CommonUI/Widget/LsCommonActivatableWidgetStack.h"
 
-void ULsCommonActivatableWidgetStack::PushWidget_Implementation(TSubclassOf<UCommonUserWidget> Widget)
+void ULsCommonActivatableWidgetStack::PushWidget_Implementation(TSubclassOf<UUserWidget> Widget,const FCanvasPanelSlotConfig& SlotConfig)
 {
 	if (Widget && Widget->IsChildOf(UCommonActivatableWidget::StaticClass()))
 	{

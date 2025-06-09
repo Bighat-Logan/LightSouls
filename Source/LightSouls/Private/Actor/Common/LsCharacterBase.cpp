@@ -10,6 +10,7 @@
 #include "Enums/LsGameplayEnums.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GasSystem/Tag/LsGameplayTag.h"
+#include "Interface/LightHitFeedbackInterface.h"
 #include "LightSouls/LightSoulsCharacter.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -96,7 +97,69 @@ void ALsCharacterBase::HandleImpactForceChange(ELsImpactForce ImpactForce, FVect
 	const struct FGameplayTagContainer& ImpactTags, ALsCharacterBase* InstigatorCharacter, AActor* ImpactCauser)
 {
     // 调用蓝图事件
-    OnImpactForceChange(ImpactForce, ImpactForceVector,HitInfo, ImpactTags, InstigatorCharacter, ImpactCauser);
+    OnImpactForceChange(ImpactForce, ImpactForceVector, HitInfo, ImpactTags, InstigatorCharacter, ImpactCauser);
+
+    // 1. 如果是None，直接返回
+    if (ImpactForce == ELsImpactForce::None)
+    {
+        return;
+    }
+
+    // 2. 如果是Light，检查并调用接口
+    if (ImpactForce == ELsImpactForce::Light)
+    {
+        if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+        {
+            if (ILightHitFeedbackInterface* HitInterface = Cast<ILightHitFeedbackInterface>(AnimInstance))
+            {
+                HitInterface->OnLightHit(this->GetActorLocation(),ImpactForceVector);
+            }
+        }
+        return;
+    }
+
+    // 3. 如果是Medium或Heavy，查找最接近的动画配置
+    if (ImpactForce == ELsImpactForce::Medium || ImpactForce == ELsImpactForce::Heavy)
+    {
+        // 获取所有匹配的配置
+        TArray<FImpactAnimationData> MatchingConfigs;
+        for (const FImpactAnimationData& Config : BeHitConfigArray)
+        {
+            if (Config.ImpactForce == ImpactForce)
+            {
+                MatchingConfigs.Add(Config);
+            }
+        }
+
+        if (MatchingConfigs.Num() > 0)
+        {
+            // 找到最接近的配置
+            FImpactAnimationData* ClosestConfig = nullptr;
+            float MinDistance = MAX_FLT;
+
+            for (FImpactAnimationData& Config : MatchingConfigs)
+            {
+                // 计算两个向量之间的角度（弧度）
+                float DotProduct = FVector::DotProduct(Config.ImpactVector.GetSafeNormal(), ImpactForceVector.GetSafeNormal());
+                float Angle = FMath::Acos(FMath::Clamp(DotProduct, -1.0f, 1.0f));
+                
+                if (Angle < MinDistance)
+                {
+                    MinDistance = Angle;
+                    ClosestConfig = &Config;
+                }
+            }
+
+            // 播放最接近配置的动画
+            if (ClosestConfig && ClosestConfig->BeHitMontage)
+            {
+                if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+                {
+                    AnimInstance->Montage_Play(ClosestConfig->BeHitMontage);
+                }
+            }
+        }
+    }
 }
 
 void ALsCharacterBase::HandleDeath(float DamageAmount, const struct FGameplayTagContainer& DamageTags, ALsCharacterBase* InstigatorCharacter, AActor* DamageCauser)

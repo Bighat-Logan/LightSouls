@@ -14,6 +14,8 @@ ULsCommonAttributeSet::ULsCommonAttributeSet()
 	, MaxHealth(1.f)
 	, Mana(0.f)
 	, MaxMana(0.f)
+	, Stamina(100.f)
+	, MaxStamina(100.f)
 	, AttackPower(1.0f)
 	, DefensePower(1.0f)
 	, MoveSpeed(1.0f)
@@ -30,6 +32,8 @@ void ULsCommonAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 	DOREPLIFETIME(ULsCommonAttributeSet, MaxHealth);
 	DOREPLIFETIME(ULsCommonAttributeSet, Mana);
 	DOREPLIFETIME(ULsCommonAttributeSet, MaxMana);
+	DOREPLIFETIME(ULsCommonAttributeSet, Stamina);
+	DOREPLIFETIME(ULsCommonAttributeSet, MaxStamina);
 	DOREPLIFETIME(ULsCommonAttributeSet, AttackPower);
 	DOREPLIFETIME(ULsCommonAttributeSet, DefensePower);
 	DOREPLIFETIME(ULsCommonAttributeSet, MoveSpeed);
@@ -159,6 +163,16 @@ void ULsCommonAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldValue)
 void ULsCommonAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldValue)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(ULsCommonAttributeSet, MaxMana, OldValue);
+}
+
+void ULsCommonAttributeSet::OnRep_Stamina(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ULsCommonAttributeSet, Stamina, OldValue);
+}
+
+void ULsCommonAttributeSet::OnRep_MaxStamina(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(ULsCommonAttributeSet, MaxStamina, OldValue);
 }
 
 void ULsCommonAttributeSet::OnRep_AttackPower(const FGameplayAttributeData& OldValue)

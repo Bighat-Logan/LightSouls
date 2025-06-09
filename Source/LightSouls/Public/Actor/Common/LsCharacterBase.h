@@ -12,6 +12,25 @@
 #include "GasSystem/Common/LsCommonAttributeSet.h"
 #include "LsCharacterBase.generated.h"
 
+/** 用于定义受击动画的结构体 */
+USTRUCT(BlueprintType)
+struct FImpactAnimationData
+{
+	GENERATED_BODY()
+
+	/** 冲击力类型 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Impact")
+	ELsImpactForce ImpactForce;
+
+	/** 冲击向量 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Impact")
+	FVector ImpactVector;
+	
+
+	/** 对应的受击动画 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Impact")
+	UAnimMontage* BeHitMontage;
+};
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -75,6 +94,9 @@ public:
 	/** 上次切换目标的时间 */
 	UPROPERTY()
 	float LastTargetSwitchTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Impact")
+	TArray<FImpactAnimationData> BeHitConfigArray;
 
 protected:
 

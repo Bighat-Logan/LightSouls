@@ -16,7 +16,7 @@ class LIGHTSOULS_API ULsCommonActivatableWidgetStack : public UCommonActivatable
 	GENERATED_BODY()
 
 	
-	virtual void PushWidget_Implementation(TSubclassOf<UCommonUserWidget> Widget) override;
+	virtual void PushWidget_Implementation(TSubclassOf<UUserWidget> Widget,const FCanvasPanelSlotConfig& SlotConfig = FCanvasPanelSlotConfig()) override;
 
 	virtual void PopWidget_Implementation() override; 
 };

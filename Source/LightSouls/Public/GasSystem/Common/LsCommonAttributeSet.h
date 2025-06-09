@@ -52,6 +52,17 @@ public:
 	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS(ULsCommonAttributeSet, MaxMana)
 
+
+	/** Current Stamina, used for actions like running and dodging. Capped by MaxStamina */
+	UPROPERTY(BlueprintReadOnly, Category = "Stamina", ReplicatedUsing=OnRep_Stamina)
+	FGameplayAttributeData Stamina;
+	ATTRIBUTE_ACCESSORS(ULsCommonAttributeSet, Stamina)
+
+	/** MaxStamina is its own attribute, since GameplayEffects may modify it */
+	UPROPERTY(BlueprintReadOnly, Category = "Stamina", ReplicatedUsing=OnRep_MaxStamina)
+	FGameplayAttributeData MaxStamina;
+	ATTRIBUTE_ACCESSORS(ULsCommonAttributeSet, MaxStamina)
+
 	/** AttackPower of the attacker is multiplied by the base Damage to reduce health, so 1.0 means no bonus */
 	UPROPERTY(BlueprintReadOnly, Category = "Damage", ReplicatedUsing = OnRep_AttackPower)
 	FGameplayAttributeData AttackPower;
@@ -102,6 +113,12 @@ protected:
 	
 	UFUNCTION()
 	virtual void OnRep_MaxMana(const FGameplayAttributeData& OldValue);
+
+	UFUNCTION()
+	virtual void OnRep_Stamina(const FGameplayAttributeData& OldValue);
+	
+	UFUNCTION()
+	virtual void OnRep_MaxStamina(const FGameplayAttributeData& OldValue);
 	
 	UFUNCTION()
 	virtual void OnRep_AttackPower(const FGameplayAttributeData& OldValue);

@@ -5,38 +5,37 @@
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
 #include "CommonActivatableWidgetSwitcher.h"
-#include "LsMainMenuCAWidget.h"
 #include "Interface/UI/WidgetManager.h"
+#include "Components/CanvasPanel.h"
 #include "LsInGameWidgetManager.generated.h"
 
 /**
- * 
+ * 游戏内UI管理器
  */
 UCLASS()
 class LIGHTSOULS_API ULsInGameWidgetManager : public UCommonActivatableWidget, public IWidgetManager
 {
 	GENERATED_BODY()
 
-
 protected:
 	virtual void NativeConstruct() override;
 
-	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	TObjectPtr<UCommonActivatableWidgetSwitcher> MainPanelSwitcher;
+	/** 主画布面板 */
+	UPROPERTY(meta = (BindWidget))
+	UCanvasPanel* MainCanvas;
 
+	/** Widget栈 */
 	UPROPERTY()
-	TObjectPtr<ULsMainMenuCAWidget> PanelA;
+	TArray<UUserWidget*> WidgetStack;
 
-	UPROPERTY()
-	TObjectPtr<ULsMainMenuCAWidget> PanelB;
+	/** 进栈方法 */
+	UCanvasPanelSlot* PushToStack(UUserWidget* Widget, const FCanvasPanelSlotConfig& SlotConfig);
 
-	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<ULsMainMenuCAWidget> PanelAClass;
+	/** 出栈方法 */
+	void PopFromStack();
 
-	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-	TSubclassOf<ULsMainMenuCAWidget> PanelBClass;
-	
-	virtual void PushWidget_Implementation(TSubclassOf<UCommonUserWidget> Widget) override;
+public:
+	virtual void PushWidget_Implementation(TSubclassOf<UUserWidget> Widget,const FCanvasPanelSlotConfig& SlotConfig = FCanvasPanelSlotConfig()) override;
 
 	virtual void PopWidget_Implementation() override; 
 	

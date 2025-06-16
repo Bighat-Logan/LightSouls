@@ -58,3 +58,17 @@ public:
 	/** Adds new targets to target data */
 	void AddTargets(const TArray<FHitResult>& HitResults, const TArray<AActor*>& TargetActors);
 };
+
+USTRUCT(BlueprintType)
+struct FCustomCost
+{
+	GENERATED_BODY()
+
+	// 花费的属性，例如 UMyAttributeSet::GetStaminaAttribute()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cost")
+	FGameplayAttribute CostAttribute;
+
+	// 花-费的具体数值
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cost")
+	float CostValue;
+};

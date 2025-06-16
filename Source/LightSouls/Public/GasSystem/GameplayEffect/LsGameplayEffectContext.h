@@ -30,7 +30,7 @@ public:
 
 	/** 冲击力 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Combat")
-	ELsImpactForce ImpactForce = ELsImpactForce::Light;
+	ELsImpactForce ImpactForce = ELsImpactForce::None;
 
 	/** 冲击向量 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Combat")

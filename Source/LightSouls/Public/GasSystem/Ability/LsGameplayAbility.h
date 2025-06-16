@@ -23,6 +23,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = GameplayEffects)
 	TMap<FGameplayTag, FLsGameplayEffectContainer> EffectContainerMap;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Cost")
+	TArray<FCustomCost> Costs;
+
 	/** Make gameplay effect container spec to be applied later, using the passed in container */
 	UFUNCTION(BlueprintCallable, Category = Ability, meta=(AutoCreateRefTerm = "EventData"))
 	virtual FLsGameplayEffectContainerSpec MakeEffectContainerSpecFromContainer(const FLsGameplayEffectContainer& Container, const FGameplayEventData& EventData, int32 OverrideGameplayLevel = -1);
@@ -38,6 +42,9 @@ public:
 	/** Applies a gameplay effect container, by creating and then applying the spec */
 	UFUNCTION(BlueprintCallable, Category = Ability, meta = (AutoCreateRefTerm = "EventData"))
 	virtual TArray<FActiveGameplayEffectHandle> ApplyEffectContainer(FGameplayTag ContainerTag, const FGameplayEventData& EventData, int32 OverrideGameplayLevel = -1);
+
+	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const override;
+	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
 
 protected:
 	/** 从容器创建游戏效果规格列表 */

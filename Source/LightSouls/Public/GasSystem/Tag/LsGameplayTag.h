@@ -28,6 +28,8 @@ public:
 	FGameplayTag Player_State_Running;
 	FGameplayTag Player_State_LockingOnTarget;
 	
+	FGameplayTag Player_State_Passive_StaminaRegenPaused;
+	
 	
 	FGameplayTag PlayerInputState_BlockInput;
 

@@ -31,6 +31,12 @@ void FLsGameplayTags::InitializeNativeGameplayTags()
 		FString("LockingOnTarget State")
 		);
 
+
+	GameplayTags.Player_State_Passive_StaminaRegenPaused= UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("PlayerState.Passive.StaminaRegenPaused"),
+	FString("StaminaRegenPaused")
+	);
+
 	
 	GameplayTags.Player_State_InOptionMenu = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("PlayerState.InOptionMenu"),
@@ -62,6 +68,8 @@ void FLsGameplayTags::InitializeNativeGameplayTags()
 	FName("Ability.AISelectMeleeAttack"),
 	FString("AISelectMeleeAttack")
 	);
+
+	
 
 	GameplayTags.Event_Montage_Shared_WeaponHit = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Event.Montage.Shared.WeaponHit"),

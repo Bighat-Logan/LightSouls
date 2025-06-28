@@ -10,6 +10,21 @@
 
 DEFINE_LOG_CATEGORY(LogTemplateController);
 
+ALsPlayerController::ALsPlayerController()
+{
+	SoulsCount = 0;
+}
+
+void ALsPlayerController::AddSouls_Implementation(int32 Amount)
+{
+	SoulsCount += Amount;
+}
+
+void ALsPlayerController::RemoveSouls_Implementation(int32 Amount)
+{
+	SoulsCount = FMath::Max(0, SoulsCount - Amount);
+}
+
 void ALsPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -69,6 +84,11 @@ void ALsPlayerController::SetupInputComponent()
        {
            EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, PlayerCharacter, &ALsCharacterBase::Look);
        }
+
+    	if (RollAction)
+    	{
+    		EnhancedInputComponent->BindAction(RollAction, ETriggerEvent::Started, PlayerCharacter, &ALsCharacterBase::Roll);
+    	}
     }
     else
     {

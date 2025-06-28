@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "InputMappingContext.h"
 #include "GameFramework/PlayerController.h"
+#include "Interface/CanHoldSouls.h"
 #include "LsPlayerController.generated.h"
 
 
@@ -14,13 +15,20 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateController, Log, All);
  * 
  */
 UCLASS()
-class LIGHTSOULS_API ALsPlayerController : public APlayerController
+class LIGHTSOULS_API ALsPlayerController : public APlayerController, public ICanHoldSouls
 {
 	GENERATED_BODY()
 	
 	virtual void BeginPlay() override;
 
 public:
+	ALsPlayerController();
+
+	//~ Begin ICanHoldSouls Interface
+	virtual void AddSouls_Implementation(int32 Amount) override;
+	virtual void RemoveSouls_Implementation(int32 Amount) override;
+	//~ End ICanHoldSouls Interface
+	
 	UFUNCTION(BlueprintImplementableEvent)
 	void HandleOptionAction();
 	
@@ -41,6 +49,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
+	/** Move Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* RollAction;
+
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
@@ -51,4 +63,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* OptionAction;
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Souls")
+	int32 SoulsCount;
 };

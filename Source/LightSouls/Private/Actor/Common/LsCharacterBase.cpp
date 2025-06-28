@@ -71,6 +71,7 @@ void ALsCharacterBase::PossessedBy(AController* NewController)
 				FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
 			}
 		}
+		AbilitySystemComponent->RegisterGameplayTagEvent(FLsGameplayTags::Get().Player_State_Stunned, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &ALsCharacterBase::StunTagChanged);
 		
 		bAbilitiesInitialized = true;
 	}
@@ -190,6 +191,12 @@ void ALsCharacterBase::HandleDeath(float DamageAmount, const struct FGameplayTag
 	OnDeath(DamageAmount,DamageTags,InstigatorCharacter,DamageCauser);
 }
 
+FGenericTeamId ALsCharacterBase::GetGenericTeamId() const
+{
+	return TeamID;
+}
+
+
 // Called every frame
 void ALsCharacterBase::Tick(float DeltaTime)
 {
@@ -199,6 +206,7 @@ void ALsCharacterBase::Tick(float DeltaTime)
 
 void ALsCharacterBase::Move(const FInputActionValue& Value)
 {
+	LastMovementInput = Value.Get<FVector2D>();
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr)
@@ -256,8 +264,21 @@ void ALsCharacterBase::Look(const FInputActionValue& Value)
     }
 }
 
+void ALsCharacterBase::Roll(const FInputActionValue& Value)
+{
+	if (AbilitySystemComponent && RollAbility)
+	{
+		AbilitySystemComponent->TryActivateAbilityByClass(RollAbility);
+	}
+}
+
 int32 ALsCharacterBase::GetCharacterLevel() const
 {
 	return CharacterLevel;
+}
+
+void ALsCharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	// 虚函数，子类可以重写此函数来实现具体的眩晕标签变化逻辑
 }
 

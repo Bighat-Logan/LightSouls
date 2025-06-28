@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "GenericTeamAgentInterface.h"
 #include "InputActionValue.h"
 #include "Enums/LsGameplayEnums.h"
 #include "GameFramework/Character.h"
@@ -35,7 +36,7 @@ struct FImpactAnimationData
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS()
-class LIGHTSOULS_API ALsCharacterBase : public ACharacter,public IAbilitySystemInterface
+class LIGHTSOULS_API ALsCharacterBase : public ACharacter,public IAbilitySystemInterface,public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -54,12 +55,19 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Abilities)
 	int32 CharacterLevel;
+
+	/** 对应的受击动画 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
+	FGenericTeamId TeamID;
 	
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+
+	/** Called for roll input */
+	void Roll(const FInputActionValue& Value);
 
 	/** Returns the character level that is passed to the ability system */
 	UFUNCTION(BlueprintCallable)
@@ -98,6 +106,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Impact")
 	TArray<FImpactAnimationData> BeHitConfigArray;
 
+	virtual FGenericTeamId GetGenericTeamId() const override;
+
+
 protected:
 
 	/** Passive gameplay effects applied on creation */
@@ -108,15 +119,25 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Abilities)
 	TArray<TSubclassOf<UGameplayAbility>> GameplayAbilities;
 
+	/** The ability to activate when rolling. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Abilities)
+	TSubclassOf<class UGameplayAbility> RollAbility;
+
 	/** If true we have initialized our abilities */
 	UPROPERTY()
 	int32 bAbilitiesInitialized;
 	
+	/** Cached movement input */
+	UPROPERTY(BlueprintReadOnly, Category = "Input")
+	FVector2D LastMovementInput;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	virtual void PossessedBy(AController* NewController) override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	
+	/** 处理眩晕标签变化的虚函数 */
+	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 };

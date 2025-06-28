@@ -4,6 +4,7 @@
 #include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbility.h"
 #include "GasSystem/GameplayEffect/Passive/GE_StaminaRegen.h"
+#include "GasSystem/Tag/LsGameplayTag.h"
 #include "GA_PassiveStaminaRegen.generated.h"
 
 /**
@@ -24,8 +25,8 @@ public:
 		bRetriggerInstancedAbility = true;
 
 		// 设置技能标签
-		AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Passive.StaminaRegen")));
-		ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Passive.StaminaRegen")));
+		AbilityTags.AddTag(FLsGameplayTags::Get().Ability_Passive_StaminaRegen);
+		ActivationOwnedTags.AddTag(FLsGameplayTags::Get().Ability_Passive_StaminaRegen);
 	}
 
 	// 精力回复效果类

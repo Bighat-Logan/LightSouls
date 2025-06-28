@@ -57,6 +57,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LockOn|Behavior")
     float TurnToTargetSpeed;
 
+    // 当目标距离小于此值时，摄像机不再调整俯仰角
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LockOn|Behavior")
+    float CameraPitchLockDistance;
+
     // 当前锁定的目标Actor
     UPROPERTY(BlueprintReadOnly, VisibleInstanceOnly, Category = "LockOn|State")
     TObjectPtr<AActor> CurrentLockedTarget;

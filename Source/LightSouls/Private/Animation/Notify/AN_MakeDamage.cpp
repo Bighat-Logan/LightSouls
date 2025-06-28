@@ -50,11 +50,12 @@ void UAN_MakeDamage::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
         return;
     }
     // 检查是否实现了CanAttackInterface接口
-    ICanAttackInterface* AttackInterface = Cast<ICanAttackInterface>(Character);
-    if (AttackInterface)
+    
+    if (Character->GetClass()->ImplementsInterface(UCanAttackInterface::StaticClass()))
     {
+        ICanAttackInterface* AttackInterface = Cast<ICanAttackInterface>(Character);
         // 获取所有攻击体积
-        TArray<AAttackVolume*> AttackVolumes = AttackInterface->GetAllAttackVolume();
+        TArray<AAttackVolume*> AttackVolumes = AttackInterface->Execute_GetAllAttackVolume(Character);
         
         // 遍历每个攻击体积并开始伤害事件
         for (AAttackVolume* AttackVolume : AttackVolumes)

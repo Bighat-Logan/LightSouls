@@ -31,6 +31,16 @@ void FLsGameplayTags::InitializeNativeGameplayTags()
 		FString("LockingOnTarget State")
 		);
 
+	GameplayTags.Player_State_Stunned = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("PlayerState.Stunned"),
+		FString("Stunned State")
+		);
+
+	GameplayTags.Player_State_Rolling = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("PlayerState.Rolling"),
+		FString("Rolling State")
+		);
+
 
 	GameplayTags.Player_State_Passive_StaminaRegenPaused= UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("PlayerState.Passive.StaminaRegenPaused"),
@@ -67,6 +77,11 @@ void FLsGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Ability_AISelectMeleeAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Ability.AISelectMeleeAttack"),
 	FString("AISelectMeleeAttack")
+	);
+
+	GameplayTags.Ability_AISelectMeleeAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Ability.Passive.StaminaRegen"),
+	FString("StaminaRegen")
 	);
 
 	

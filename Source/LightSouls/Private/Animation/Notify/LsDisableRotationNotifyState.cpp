@@ -12,6 +12,9 @@ void ULsDisableRotationNotifyState::NotifyBegin(USkeletalMeshComponent* MeshComp
     {
         if (UCharacterMovementComponent* MovementComponent = Character->GetCharacterMovement())
         {
+            OrientRotationToMovement = MovementComponent->bOrientRotationToMovement;
+            ControllerDesiredRotation = MovementComponent->bUseControllerDesiredRotation;
+            
             MovementComponent->bOrientRotationToMovement = false;
             MovementComponent->bUseControllerDesiredRotation = false;
         }
@@ -26,8 +29,8 @@ void ULsDisableRotationNotifyState::NotifyEnd(USkeletalMeshComponent* MeshComp, 
     {
         if (UCharacterMovementComponent* MovementComponent = Character->GetCharacterMovement())
         {
-            MovementComponent->bOrientRotationToMovement = true;
-            MovementComponent->bUseControllerDesiredRotation = true;
+            MovementComponent->bOrientRotationToMovement = OrientRotationToMovement;
+            MovementComponent->bUseControllerDesiredRotation = ControllerDesiredRotation;
         }
     }
 } 

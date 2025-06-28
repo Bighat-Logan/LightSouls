@@ -27,6 +27,8 @@ public:
 
 	FGameplayTag Player_State_Running;
 	FGameplayTag Player_State_LockingOnTarget;
+	FGameplayTag Player_State_Stunned;
+	FGameplayTag Player_State_Rolling;
 	
 	FGameplayTag Player_State_Passive_StaminaRegenPaused;
 	
@@ -36,6 +38,8 @@ public:
 
 	FGameplayTag Ability_Melee;
 	FGameplayTag Ability_AISelectMeleeAttack;
+
+	FGameplayTag Ability_Passive_StaminaRegen;
 
 	FGameplayTag Event_Montage_Shared_WeaponHit;
 

@@ -18,10 +18,11 @@ ULockOnComponent::ULockOnComponent()
     PrimaryComponentTick.bCanEverTick = true; // 需要Tick来平滑转向
     LockOnDistance = 1000.0f;
     LockOnConeHalfAngle = 30.0f;
-    TurnToTargetSpeed = 8.0f;
+    TurnToTargetSpeed = 80.0f;
     LostLockOnDistance = 2500.0f;
     CurrentLockedTarget = nullptr;
     bDrawDebugCone = false;
+    CameraPitchLockDistance = 300.0f; // 默认值300单位
     // **重要**: 在这里设置默认的碰撞通道，或者确保在蓝图中正确设置
     // 例如: TraceChannelToUse = ECC_GameTraceChannel1; // 替换为你的LockOn通道
 }
@@ -185,7 +186,12 @@ void ULockOnComponent::LockNewTarget(AActor* NewTarget)
     }
 
     // 禁用自动朝向移动方向
-    if (CharacterMovement)
+    FGameplayTagContainer GameplayTagContainer;
+    if (UAbilitySystemComponent* ASC = GetOwner()->FindComponentByClass<UAbilitySystemComponent>())
+    {
+        ASC->GetOwnedGameplayTags(GameplayTagContainer);
+    }
+    if (CharacterMovement && !GameplayTagContainer.HasTag(FLsGameplayTags::Get().Player_State_Running))
     {
         CharacterMovement->bOrientRotationToMovement = false;
     }
@@ -286,7 +292,7 @@ void ULockOnComponent::TurnTowardsTarget(float DeltaTime)
     {
         ASC->GetOwnedGameplayTags(GameplayTagContainer);
     }
-    if (!GameplayTagContainer.HasTag(FLsGameplayTags::Get().Player_State_Running))
+    if (!GameplayTagContainer.HasTag(FLsGameplayTags::Get().Player_State_Running) && !GameplayTagContainer.HasTag(FLsGameplayTags::Get().Player_State_Rolling))
     {
         FRotator OwnerRotation = OwnerPawn->GetActorRotation();
         FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(OwnerPawn->GetActorLocation(), TargetLocation);
@@ -301,7 +307,23 @@ void ULockOnComponent::TurnTowardsTarget(float DeltaTime)
     FVector CameraTargetLocation = (TargetLocation + OwnerPawn->GetActorLocation()) / 2.0f;
     // 摄像机的起始点一般是摄像机的位置，而不是Pawn的位置
     FVector CameraLocation = PlayerController->PlayerCameraManager ? PlayerController->PlayerCameraManager->GetCameraLocation() : OwnerPawn->GetActorLocation();
-    FRotator TargetControlRotation = UKismetMathLibrary::FindLookAtRotation(CameraLocation, CameraTargetLocation);
+    
+    // 计算到目标的距离
+    float DistanceToTarget = FVector::Distance(OwnerPawn->GetActorLocation(), TargetLocation);
+    
+    FRotator TargetControlRotation;
+    if (DistanceToTarget <= CameraPitchLockDistance)
+    {
+        // 如果距离小于阈值，保持当前俯仰角
+        TargetControlRotation = FRotator(ControlRotation.Pitch, 
+            UKismetMathLibrary::FindLookAtRotation(CameraLocation, CameraTargetLocation).Yaw,
+            ControlRotation.Roll);
+    }
+    else
+    {
+        // 如果距离大于阈值，正常调整俯仰角
+        TargetControlRotation = UKismetMathLibrary::FindLookAtRotation(CameraLocation, CameraTargetLocation);
+    }
     
     PlayerController->SetControlRotation(FMath::RInterpTo(ControlRotation, TargetControlRotation, DeltaTime, TurnToTargetSpeed));
 }

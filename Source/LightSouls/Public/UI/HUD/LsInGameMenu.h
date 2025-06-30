@@ -8,7 +8,11 @@
 #include "UI/CommonUI/Widget/LsCommonActivatableWidget.h"
 #include "UI/Widget/LsUserWidget.h"
 #include "UI/WidgetController/PlayStatsWidgetController.h"
+#include "UI/WidgetController/SoulsAccountWidgetController.h"
 #include "LsInGameMenu.generated.h"
+
+class UPlayStatsWidgetController;
+class USoulsAccountWidgetController;
 
 /**
  * 游戏内HUD
@@ -19,9 +23,11 @@ class LIGHTSOULS_API ALsInGameMenu : public AHUD
 	GENERATED_BODY()
 
 public:
-	UPlayStatsWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WidgetControllerParams);
+	UPlayStatsWidgetController* GetPlayStatsWidgetController(const FWidgetControllerParams& WidgetControllerParams);
+	USoulsAccountWidgetController* GetSoulsAccountWidgetController(const FWidgetControllerParams& WidgetControllerParams);
 	/** 初始化Overlay */
 	void InitPlayStatsWidget(APlayerController* PC, UAbilitySystemComponent* ASC, UAttributeSet* AS);
+	void InitSoulsAccountWidget(APlayerController* PC);
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> MainMenuWidgetClass;
@@ -30,7 +36,13 @@ public:
 	TSubclassOf<UUserWidget> PlayStatsWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> SoulsAccountWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UPlayStatsWidgetController> PlayStatsWidgetControllerClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<USoulsAccountWidgetController> SoulsAccountWidgetControllerClass;
 
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<ULsCommonActivatableWidget> ULmMainMenuStack;
@@ -38,8 +50,14 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<ULsUserWidget> PlayStatsWidget;
 
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<ULsUserWidget> SoulsAccountWidget;
+
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UPlayStatsWidgetController> PlayStatsWidgetController;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USoulsAccountWidgetController> SoulsAccountWidgetController;
 
 protected:
 	virtual void BeginPlay() override;

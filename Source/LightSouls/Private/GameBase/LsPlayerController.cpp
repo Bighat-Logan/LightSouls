@@ -18,11 +18,18 @@ ALsPlayerController::ALsPlayerController()
 void ALsPlayerController::AddSouls_Implementation(int32 Amount)
 {
 	SoulsCount += Amount;
+	OnSoulsCountChanged.Broadcast(SoulsCount);
 }
 
 void ALsPlayerController::RemoveSouls_Implementation(int32 Amount)
 {
 	SoulsCount = FMath::Max(0, SoulsCount - Amount);
+	OnSoulsCountChanged.Broadcast(SoulsCount);
+}
+
+int32 ALsPlayerController::GetSoulsCount() const
+{
+	return SoulsCount;
 }
 
 void ALsPlayerController::BeginPlay()

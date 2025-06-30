@@ -5,6 +5,7 @@
 
 #include "UI/WidgetController/LsWidgetController.h"
 #include "UI/WidgetController/PlayStatsWidgetController.h"
+#include "UI/WidgetController/SoulsAccountWidgetController.h"
 
 void ALsInGameMenu::BeginPlay()
 {
@@ -30,7 +31,7 @@ void ALsInGameMenu::BeginPlay()
 	}
 }
 
-UPlayStatsWidgetController* ALsInGameMenu::GetOverlayWidgetController(
+UPlayStatsWidgetController* ALsInGameMenu::GetPlayStatsWidgetController(
 	const FWidgetControllerParams& WidgetControllerParams)
 {
 	if (PlayStatsWidgetController == nullptr)
@@ -42,6 +43,17 @@ UPlayStatsWidgetController* ALsInGameMenu::GetOverlayWidgetController(
 	return PlayStatsWidgetController;
 }
 
+USoulsAccountWidgetController* ALsInGameMenu::GetSoulsAccountWidgetController(const FWidgetControllerParams& WidgetControllerParams)
+{
+	if (SoulsAccountWidgetController == nullptr)
+	{
+		SoulsAccountWidgetController = NewObject<USoulsAccountWidgetController>(this, SoulsAccountWidgetControllerClass);
+		SoulsAccountWidgetController->SetWidgetControllerParams(WidgetControllerParams);
+		SoulsAccountWidgetController->BindCallbacksToDependencies();
+	}
+	return SoulsAccountWidgetController;
+}
+
 void ALsInGameMenu::InitPlayStatsWidget(APlayerController* PC, UAbilitySystemComponent* ASC, UAttributeSet* AS)
 {
 	checkf(PlayStatsWidgetClass, TEXT("Overlay Widget Class uninitialized, please fill out BP_LsInGameMenu"));
@@ -51,10 +63,25 @@ void ALsInGameMenu::InitPlayStatsWidget(APlayerController* PC, UAbilitySystemCom
 	PlayStatsWidget = Cast<ULsUserWidget>(Widget);
 	
 	const FWidgetControllerParams WidgetControllerParams(PC, ASC, AS);
-	UPlayStatsWidgetController* WidgetController = GetOverlayWidgetController(WidgetControllerParams);
+	UPlayStatsWidgetController* WidgetController = GetPlayStatsWidgetController(WidgetControllerParams);
 
 	PlayStatsWidget->SetWidgetController(WidgetController);
 	WidgetController->BroadcastInitialValues();
 	Widget->AddToViewport();
+}
 
+void ALsInGameMenu::InitSoulsAccountWidget(APlayerController* PC)
+{
+	checkf(SoulsAccountWidgetClass, TEXT("Souls Account Widget Class uninitialized, please fill out BP_LsInGameMenu"));
+	checkf(SoulsAccountWidgetControllerClass, TEXT("Souls Account Widget Controller Class uninitialized, please fill out BP_LsInGameMenu"));
+
+	UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), SoulsAccountWidgetClass);
+	SoulsAccountWidget = Cast<ULsUserWidget>(Widget);
+
+	const FWidgetControllerParams WidgetControllerParams(PC, nullptr, nullptr);
+	USoulsAccountWidgetController* WidgetController = GetSoulsAccountWidgetController(WidgetControllerParams);
+
+	SoulsAccountWidget->SetWidgetController(WidgetController);
+	WidgetController->BroadcastInitialValues();
+	Widget->AddToViewport();
 }

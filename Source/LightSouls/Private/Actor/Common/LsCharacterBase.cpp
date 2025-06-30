@@ -4,6 +4,7 @@
 #include "Actor/Common/LsCharacterBase.h"
 
 
+#include "ActorComponent/SpawnSoulComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "ActorComponent/LockOnComponent/LockOnComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -35,6 +36,7 @@ ALsCharacterBase::ALsCharacterBase()
 	// 设置默认值
 	MinTargetSwitchInterval = 0.2f; // 默认200毫秒
 	LastTargetSwitchTime = 0.0f;
+	SoulsToProvideOnDeath = 100;
 }
 
 // Called when the game starts or when spawned
@@ -189,6 +191,14 @@ void ALsCharacterBase::HandleDeath(float DamageAmount, const struct FGameplayTag
     UE_LOG(LogTemp, Log, TEXT("%s has died."), *GetName());
 
 	OnDeath(DamageAmount,DamageTags,InstigatorCharacter,DamageCauser);
+	
+	if (InstigatorCharacter)
+	{
+		if(USpawnSoulComponent* SpawnSoulComp = InstigatorCharacter->FindComponentByClass<USpawnSoulComponent>())
+		{
+			SpawnSoulComp->SpawnSoul(SoulsToProvideOnDeath, GetActorLocation());
+		}
+	}
 }
 
 FGenericTeamId ALsCharacterBase::GetGenericTeamId() const

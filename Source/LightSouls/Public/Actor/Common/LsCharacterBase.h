@@ -56,6 +56,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = Abilities)
 	int32 CharacterLevel;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Souls")
+	int32 SoulsToProvideOnDeath;
+
 	/** 对应的受击动画 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
 	FGenericTeamId TeamID;

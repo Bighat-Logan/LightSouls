@@ -10,6 +10,7 @@
 
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateController, Log, All);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSoulsCountChangedSignature, int32, NewCount);
 
 /**
  * 
@@ -29,6 +30,12 @@ public:
 	virtual void RemoveSouls_Implementation(int32 Amount) override;
 	//~ End ICanHoldSouls Interface
 	
+	UFUNCTION(BlueprintPure, Category="Souls")
+	int32 GetSoulsCount() const;
+
+	UPROPERTY(BlueprintAssignable, Category="Souls")
+	FOnSoulsCountChangedSignature OnSoulsCountChanged;
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void HandleOptionAction();
 	

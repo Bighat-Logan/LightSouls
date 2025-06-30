@@ -52,7 +52,7 @@ void USpawnSoulComponent::SpawnSoul(int32 Amount, const FVector& FromLocation)
 	if (SoulsActorClass)
 	{
 		FVector OwnerLocation = Owner->GetActorLocation();
-		FVector Direction = OwnerLocation - FromLocation;
+		FVector Direction = FromLocation - OwnerLocation ;
 
 		if (Direction.IsNearlyZero())
 		{

@@ -81,6 +81,7 @@ void ALsPlayerCharacter::InitAbilityActorInfo()
 		if (ALsInGameMenu* LsInGameHUD = Cast<ALsInGameMenu>(LsPlayerController->GetHUD()))
 		{
 			LsInGameHUD->InitPlayStatsWidget(LsPlayerController, AbilitySystemComponent, AttributeSet);
+			LsInGameHUD->InitSoulsAccountWidget(LsPlayerController);
 		}
 	}
 }
